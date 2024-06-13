@@ -37,31 +37,14 @@ import androidx.navigation.NavHostController
 import com.example.weatherapp.data.ItemViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationListener
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.OnTokenCanceledListener
 
 
 
-@SuppressLint("MissingPermission")
-private fun getCurrentLocation(fusedLocationClient: FusedLocationProviderClient, context: Context, callback: (Double, Double) -> Unit) {
-    if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    val latitude = location.latitude
-                    val longitude = location.longitude
-                    callback(latitude, longitude)
-                } else {
-                    // Handle case where last known location is null
-                }
-            }
-            .addOnFailureListener { e ->
-                // Handle failure to retrieve location
-            }
-    } else {
-        // Permission not granted, request it
-        //requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_COARSE_LOCATION)
-    }
-}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -142,19 +125,29 @@ fun NewLocation(viewModel: ItemViewModel, navController: NavHostController)
             .background(Color.Gray)
             .clickable{
 
+
                 if (ContextCompat.checkSelfPermission(
                         context,
                         android.Manifest.permission.ACCESS_COARSE_LOCATION
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
 
-                    getCurrentLocation(fusedLocationClient, context) { latitude, longitude ->
-                        long = longitude.toString()
-                        lati = latitude.toString()
-                        //println("Latitude: $latitude, Longitude: $longitude")
-                        // Update UI or perform other actions with the retrieved location
-                    }
 
+
+                //https://stackoverflow.com/questions/71137555/getcurrentlocation-method-in-kotlin
+                    fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, object : CancellationToken() {
+                        override fun onCanceledRequested(p0: OnTokenCanceledListener) = CancellationTokenSource().token
+
+                        override fun isCancellationRequested() = false
+                    }).addOnSuccessListener { location: Location? ->
+                        if (location == null)
+                            println("wykszaczyło")
+                        else {
+                            lati = location.latitude.toString()
+                            long = location.longitude.toString()
+                        }
+
+                    }
 
 
                 } else {

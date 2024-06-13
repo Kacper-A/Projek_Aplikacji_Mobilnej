@@ -21,7 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import com.example.weatherapp.data.WeatherData
-import kotlinx.coroutines.Job
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
@@ -96,13 +96,19 @@ fun Navigation() {
 
 
 
-
+    val cartesianChartModelProducer = remember { CartesianChartModelProducer.build() }
 
 
 
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "MainScreen") {
+    NavHost(navController = navController, startDestination = "refreshDataButtonClickedFromMainScreenStart") {
+
+
+
+
+
+
         composable("MainScreen") {
             if (loading == true)
             {
@@ -110,7 +116,7 @@ fun Navigation() {
             }
             else
             {
-                MainScreen(viewModel,navController)
+                MainScreen(viewModel,navController,data, cartesianChartModelProducer)
             }
         }
         composable("Settings")
@@ -126,18 +132,24 @@ fun Navigation() {
             NewLocation(viewModel,navController)
         }
 
+        composable("CitiesSelectionCountries")
+        {
+            CitiesSelectionCountries(viewModel,navController)
+        }
+
         composable("refreshDataButtonClickedFromMainScreenStart")
         {
             //after refresh change to MainScreen
 
             if(!loading) {
-                println("test")
+                //println("test")
                 loading = true
                 GlobalScope.launch(Dispatchers.Main) {
                     data = RetrofitInstance.api.getData(latitude, longitude)
-                    loading = false
 
-                    println("data print: ${data}")
+
+                    //println("data print: ${data}")
+                    loading = false
                 }
                 navController.navigate("MainScreen")
             }

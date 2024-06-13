@@ -95,7 +95,7 @@ dependencies {
     //https://github.com/patrykandpatrick/vico?tab=readme-ov-file
 
     // For Jetpack Compose.
-    implementation("com.patrykandpatrick.vico:compose:2.0.0-alpha.14")
+    implementation("com.patrykandpatrick.vico:compose:2.0.0-alpha.18")
 
     // For `compose`. Creates a `ChartStyle` based on an M2 Material Theme.
     //implementation("com.patrykandpatrick.vico:compose-m2:2.0.0-alpha.14")
@@ -104,7 +104,7 @@ dependencies {
     //implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.14")
 
     // Houses the core logic for charts and other elements. Included in all other modules.
-    //implementation("com.patrykandpatrick.vico:core:2.0.0-alpha.14")
+    implementation("com.patrykandpatrick.vico:core:2.0.0-alpha.18")
 
     // For the view system.
     //implementation("com.patrykandpatrick.vico:views:2.0.0-alpha.14")
